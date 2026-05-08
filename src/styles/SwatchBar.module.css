@@ -1,0 +1,52 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.label {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  font-weight: 500;
+}
+
+.bar {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--line);
+  gap: 1px;
+  user-select: none;
+}
+
+.barHue {
+  height: 32px;
+}
+.barGray {
+  height: 24px;
+}
+
+.swatch {
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+  cursor: zoom-in;
+  transition: transform 120ms var(--ease), box-shadow 120ms var(--ease);
+}
+.swatch:hover {
+  transform: scaleY(1.22);
+  z-index: 1;
+  box-shadow: 0 0 0 2px #ffffff, var(--shadow-md);
+  border-radius: 3px;
+}
+.swatch:active {
+  transform: scaleY(0.96);
+}

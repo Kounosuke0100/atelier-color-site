@@ -1,0 +1,154 @@
+.header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  height: 56px;
+  border-bottom: 1px solid var(--line);
+  padding: 0 clamp(16px, 4vw, 40px);
+  background: var(--bg);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+}
+
+.logo {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 30%, #ffffff 0%, transparent 28%),
+    conic-gradient(
+      from 0deg,
+      #ff4d4d,
+      #ffd24d,
+      #4dffa1,
+      #4dc4ff,
+      #b34dff,
+      #ff4d4d
+    );
+  box-shadow: 0 0 0 1px var(--line) inset;
+}
+
+.wordmark {
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.divider {
+  width: 1px;
+  height: 18px;
+  background: var(--line);
+  flex: 0 0 auto;
+}
+
+.back {
+  border: none;
+  padding: 6px;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  font-size: 16px;
+  color: var(--ink-2);
+}
+.back:not(:disabled):hover {
+  background: var(--surface-2);
+  color: var(--ink);
+}
+.back:disabled {
+  background: transparent;
+}
+
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.crumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sep {
+  color: var(--ink-3);
+  margin: 0 2px;
+  font-size: 13px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+.chip:not(:disabled):hover {
+  border-color: var(--line-strong);
+  background: var(--surface-2);
+}
+.chip:disabled {
+  background: var(--surface-2);
+  color: var(--ink-2);
+}
+
+.chipBase {
+  font-family: var(--font-sans);
+  letter-spacing: 0;
+}
+
+.swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--line) inset;
+}
+
+.depth {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--line-strong);
+}
+.dotOn {
+  background: var(--ink);
+}
+
+@media (max-width: 720px) {
+  .header {
+    height: auto;
+    padding: 12px clamp(16px, 4vw, 40px);
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .depth {
+    display: none;
+  }
+}
