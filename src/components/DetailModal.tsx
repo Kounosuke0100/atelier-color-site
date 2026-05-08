@@ -6,6 +6,7 @@ import {
   hslToRgb,
   type HSL,
 } from "../lib/color";
+import { HarmonyPanel } from "./HarmonyPanel";
 import styles from "../styles/DetailModal.module.css";
 
 type Props = {
@@ -15,6 +16,11 @@ type Props = {
 
 export function DetailModal({ color, onClose }: Props) {
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const [base, setBase] = useState<HSL | null>(color);
+
+  useEffect(() => {
+    setBase(color);
+  }, [color]);
 
   useEffect(() => {
     if (!color) return;
@@ -25,11 +31,11 @@ export function DetailModal({ color, onClose }: Props) {
     return () => window.removeEventListener("keydown", onKey);
   }, [color, onClose]);
 
-  if (!color) return null;
+  if (!color || !base) return null;
 
-  const hex = hslToHex(color);
-  const rgb = formatRgb(hslToRgb(color));
-  const hsl = formatHsl(color);
+  const hex = hslToHex(base);
+  const rgb = formatRgb(hslToRgb(base));
+  const hsl = formatHsl(base);
 
   const copy = async (key: string, value: string) => {
     try {
@@ -83,6 +89,7 @@ export function DetailModal({ color, onClose }: Props) {
             );
           })}
         </div>
+        <HarmonyPanel base={base} onPick={setBase} />
       </div>
     </div>
   );
