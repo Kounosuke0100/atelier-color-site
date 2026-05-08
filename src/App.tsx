@@ -5,21 +5,22 @@ import { Header } from "./components/Header";
 import { StatusPanel } from "./components/StatusPanel";
 import { DetailModal } from "./components/DetailModal";
 import { useNavigator } from "./state/useNavigator";
-import { centerColor, computeNextLayer, isTerminal } from "./lib/grid";
+import { centerColor } from "./lib/grid";
 import type { HSL } from "./lib/color";
 import styles from "./styles/App.module.css";
+
+const MAX_DEPTH = 5;
 
 export default function App() {
   const { stack, current, drillDown, back, jumpTo } = useNavigator();
   const [detail, setDetail] = useState<HSL | null>(null);
 
   const handleSingleClick = (color: HSL) => {
-    const next = computeNextLayer(current, color);
-    if (isTerminal(next)) {
+    if (current.depth >= MAX_DEPTH) {
       setDetail(color);
-    } else {
-      drillDown(color);
+      return;
     }
+    drillDown(color);
   };
 
   return (
