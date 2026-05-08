@@ -62,7 +62,7 @@ export default function App() {
           シングルクリックでズーム · ダブルクリックで詳細 ·{" "}
           <kbd>Esc</kbd> で閉じる
         </span>
-        <span>Chroma — drill-down color picker</span>
+        <span>Atelier Color — drill-down color picker</span>
       </footer>
       <DetailModal color={detail} onClose={() => setDetail(null)} />
     </div>

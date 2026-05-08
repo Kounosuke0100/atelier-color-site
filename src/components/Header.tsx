@@ -1,5 +1,6 @@
 import { hslToHex } from "../lib/color";
 import { centerColor, type Layer } from "../lib/grid";
+import logoUrl from "../assets/logo.svg";
 import styles from "../styles/Header.module.css";
 
 type Props = {
@@ -17,8 +18,8 @@ export function Header({ stack, onBack, onJump }: Props) {
   return (
     <header className={styles.header}>
       <div className={styles.brand}>
-        <span className={styles.logo} aria-hidden="true" />
-        <span className={styles.wordmark}>Chroma</span>
+        <img className={styles.logo} src={logoUrl} alt="" aria-hidden="true" />
+        <span className={styles.wordmark}>Atelier Color</span>
       </div>
       <div className={styles.divider} />
       <button

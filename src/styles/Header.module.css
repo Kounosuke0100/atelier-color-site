@@ -16,21 +16,10 @@
 }
 
 .logo {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 30% 30%, #ffffff 0%, transparent 28%),
-    conic-gradient(
-      from 0deg,
-      #ff4d4d,
-      #ffd24d,
-      #4dffa1,
-      #4dc4ff,
-      #b34dff,
-      #ff4d4d
-    );
-  box-shadow: 0 0 0 1px var(--line) inset;
+  width: 24px;
+  height: 24px;
+  display: block;
+  object-fit: contain;
 }
 
 .wordmark {
