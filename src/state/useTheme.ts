@@ -15,7 +15,7 @@ function readStoredMode(): ThemeMode {
   } catch {
     // ignore
   }
-  return "auto";
+  return "light";
 }
 
 function autoFromColor(color: HSL): ResolvedTheme {
