@@ -1,10 +1,9 @@
-import { useState } from "react";
 import { ColorGrid } from "./components/ColorGrid";
 import { SwatchBar, hueColors, grayColors } from "./components/SwatchBar";
 import { Header } from "./components/Header";
 import { StatusPanel } from "./components/StatusPanel";
-import { DetailModal } from "./components/DetailModal";
 import { useNavigator } from "./state/useNavigator";
+import { useTheme } from "./state/useTheme";
 import { centerColor } from "./lib/grid";
 import type { HSL } from "./lib/color";
 import styles from "./styles/App.module.css";
@@ -12,12 +11,13 @@ import styles from "./styles/App.module.css";
 const MAX_DEPTH = 5;
 
 export default function App() {
-  const { stack, current, drillDown, back, jumpTo } = useNavigator();
-  const [detail, setDetail] = useState<HSL | null>(null);
+  const { stack, current, drillDown, back, jumpTo, setBaseFromHsl } =
+    useNavigator();
+  const theme = useTheme(centerColor(current));
 
   const handleSingleClick = (color: HSL) => {
     if (current.depth >= MAX_DEPTH) {
-      setDetail(color);
+      setBaseFromHsl(color);
       return;
     }
     drillDown(color);
@@ -25,7 +25,15 @@ export default function App() {
 
   return (
     <div className={styles.app}>
-      <Header stack={stack} onBack={back} onJump={jumpTo} />
+      <Header
+        stack={stack}
+        onBack={back}
+        onJump={jumpTo}
+        onSetBase={setBaseFromHsl}
+        themeMode={theme.mode}
+        onThemeChange={theme.setMode}
+        resolvedTheme={theme.resolved}
+      />
       <div className={styles.shell}>
         <main className={styles.main}>
           <section className={styles.canvas}>
@@ -33,7 +41,7 @@ export default function App() {
               <ColorGrid
                 layer={current}
                 onSingleClick={handleSingleClick}
-                onDoubleClick={setDetail}
+                onDoubleClick={handleSingleClick}
               />
               {current.depth === 0 && (
                 <>
@@ -42,30 +50,32 @@ export default function App() {
                     label="Hue"
                     variant="hue"
                     onSingleClick={handleSingleClick}
-                    onDoubleClick={setDetail}
+                    onDoubleClick={handleSingleClick}
                   />
                   <SwatchBar
                     colors={grayColors(12)}
                     label="Grayscale"
                     variant="gray"
                     onSingleClick={handleSingleClick}
-                    onDoubleClick={setDetail}
+                    onDoubleClick={handleSingleClick}
                   />
                 </>
               )}
             </div>
           </section>
-          <StatusPanel color={centerColor(current)} depth={current.depth} />
+          <StatusPanel
+            color={centerColor(current)}
+            depth={current.depth}
+            onPickBase={setBaseFromHsl}
+          />
         </main>
       </div>
       <footer className={styles.footer}>
         <span>
-          シングルクリックでズーム · ダブルクリックで詳細 ·{" "}
-          <kbd>Esc</kbd> で閉じる
+          クリックでズーム · Inspector で詳細を確認 · HEX 入力で基本色を直接指定
         </span>
         <span>Atelier Color — drill-down color picker</span>
       </footer>
-      <DetailModal color={detail} onClose={() => setDetail(null)} />
     </div>
   );
 }

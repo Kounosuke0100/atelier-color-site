@@ -7,9 +7,14 @@ export type HarmonyId =
   | "split"
   | "tetradic"
   | "square"
-  | "monochromatic";
+  | "monochromatic"
+  | "practical";
 
-export type HarmonySwatch = { hsl: HSL; role: "base" | "derived" };
+export type HarmonySwatch = {
+  hsl: HSL;
+  role: "base" | "derived";
+  ratio?: number;
+};
 
 export const HARMONY_ORDER: { id: HarmonyId; label: string }[] = [
   { id: "complementary", label: "Complementary" },
@@ -19,6 +24,7 @@ export const HARMONY_ORDER: { id: HarmonyId; label: string }[] = [
   { id: "tetradic", label: "Tetradic" },
   { id: "square", label: "Square" },
   { id: "monochromatic", label: "Monochromatic" },
+  { id: "practical", label: "Practical 60-30-10" },
 ];
 
 const normHue = (h: number) => ((h % 360) + 360) % 360;
@@ -44,6 +50,25 @@ function monochromatic(base: HSL): HarmonySwatch[] {
   }));
 }
 
+function practical(base: HSL): HarmonySwatch[] {
+  const goLighter = base.l <= 50;
+  const secondary: HSL = {
+    h: base.h,
+    s: clamp(base.s * 0.35, 0, 100),
+    l: goLighter ? clamp(base.l + 25, 8, 92) : clamp(base.l - 25, 8, 92),
+  };
+  const accent: HSL = {
+    h: normHue(base.h + 180),
+    s: clamp(Math.max(base.s, 70), 0, 100),
+    l: goLighter ? clamp(base.l + 15, 8, 92) : clamp(base.l - 15, 8, 92),
+  };
+  return [
+    { hsl: base, role: "base", ratio: 60 },
+    { hsl: secondary, role: "derived", ratio: 30 },
+    { hsl: accent, role: "derived", ratio: 10 },
+  ];
+}
+
 export function getHarmony(base: HSL, id: HarmonyId): HarmonySwatch[] {
   switch (id) {
     case "complementary":
@@ -64,5 +89,7 @@ export function getHarmony(base: HSL, id: HarmonyId): HarmonySwatch[] {
       return shift(base, [90, 180, 270]);
     case "monochromatic":
       return monochromatic(base);
+    case "practical":
+      return practical(base);
   }
 }

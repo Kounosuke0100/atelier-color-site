@@ -44,7 +44,7 @@
 .swatch:hover {
   transform: scaleY(1.22);
   z-index: 1;
-  box-shadow: 0 0 0 2px #ffffff, var(--shadow-md);
+  box-shadow: 0 0 0 2px var(--ring), var(--shadow-md);
   border-radius: 3px;
 }
 .swatch:active {

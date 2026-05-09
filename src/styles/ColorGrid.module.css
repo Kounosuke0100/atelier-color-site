@@ -37,7 +37,7 @@
 .cell:hover {
   transform: scale(1.18);
   z-index: 2;
-  box-shadow: 0 0 0 2px #ffffff, var(--shadow-md);
+  box-shadow: 0 0 0 2px var(--ring), var(--shadow-md);
   border-radius: 4px;
 }
 .cell:active {

@@ -1,5 +1,7 @@
-import { hslToHex } from "../lib/color";
+import { useState } from "react";
+import { hexToHsl, hslToHex, type HSL } from "../lib/color";
 import { centerColor, type Layer } from "../lib/grid";
+import type { ResolvedTheme, ThemeMode } from "../state/useTheme";
 import logoUrl from "../assets/logo.svg";
 import styles from "../styles/Header.module.css";
 
@@ -7,13 +9,55 @@ type Props = {
   stack: Layer[];
   onBack: () => void;
   onJump: (depth: number) => void;
+  onSetBase: (hsl: HSL) => void;
+  themeMode: ThemeMode;
+  onThemeChange: (mode: ThemeMode) => void;
+  resolvedTheme: ResolvedTheme;
 };
 
 const MAX_DEPTH_DOTS = 5;
 
-export function Header({ stack, onBack, onJump }: Props) {
+const THEME_OPTIONS: { id: ThemeMode; label: string }[] = [
+  { id: "auto", label: "Auto" },
+  { id: "light", label: "Light" },
+  { id: "dark", label: "Dark" },
+  { id: "gray", label: "Gray" },
+];
+
+export function Header({
+  stack,
+  onBack,
+  onJump,
+  onSetBase,
+  themeMode,
+  onThemeChange,
+  resolvedTheme,
+}: Props) {
   const canGoBack = stack.length > 1;
-  const depth = stack[stack.length - 1].depth;
+  const current = stack[stack.length - 1];
+  const depth = current.depth;
+
+  const [hexInput, setHexInput] = useState("");
+  const [invalid, setInvalid] = useState(false);
+
+  const placeholder =
+    current.depth === 0 ? "#A1B2C3" : hslToHex(centerColor(current));
+
+  const submit = () => {
+    const value = hexInput.trim();
+    if (!value) {
+      setInvalid(false);
+      return;
+    }
+    const hsl = hexToHsl(value);
+    if (!hsl) {
+      setInvalid(true);
+      return;
+    }
+    setInvalid(false);
+    setHexInput("");
+    onSetBase(hsl);
+  };
 
   return (
     <header className={styles.header}>
@@ -56,6 +100,56 @@ export function Header({ stack, onBack, onJump }: Props) {
           );
         })}
       </nav>
+      <div className={styles.tools}>
+        <form
+          className={`${styles.hexForm} ${invalid ? styles.hexFormInvalid : ""}`}
+          onSubmit={(e) => {
+            e.preventDefault();
+            submit();
+          }}
+        >
+          <span className={styles.hexLabel}>HEX</span>
+          <input
+            className={styles.hexInput}
+            type="text"
+            inputMode="text"
+            placeholder={placeholder}
+            maxLength={7}
+            value={hexInput}
+            aria-invalid={invalid}
+            aria-label="基本色を HEX で指定"
+            onChange={(e) => {
+              setHexInput(e.target.value);
+              if (invalid) setInvalid(false);
+            }}
+            onBlur={submit}
+          />
+        </form>
+        <div
+          className={styles.themeGroup}
+          role="group"
+          aria-label="背景テーマ"
+        >
+          {THEME_OPTIONS.map(({ id, label }) => (
+            <button
+              key={id}
+              type="button"
+              className={`${styles.themeBtn} ${
+                themeMode === id ? styles.themeBtnActive : ""
+              }`}
+              onClick={() => onThemeChange(id)}
+              aria-pressed={themeMode === id}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        {themeMode === "auto" && (
+          <span className={styles.themeAuto} aria-live="polite">
+            → {resolvedTheme}
+          </span>
+        )}
+      </div>
       <div
         className={styles.depth}
         aria-label={`階層 ${depth}`}
