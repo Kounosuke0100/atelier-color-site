@@ -6,18 +6,6 @@ export type ResolvedTheme = "light" | "dark" | "gray";
 
 const STORAGE_KEY = "atelier-color-theme";
 
-function readStoredMode(): ThemeMode {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw === "auto" || raw === "light" || raw === "dark" || raw === "gray") {
-      return raw;
-    }
-  } catch {
-    // ignore
-  }
-  return "light";
-}
-
 function autoFromColor(color: HSL): ResolvedTheme {
   if (color.l >= 70) return "light";
   if (color.l <= 30) return "dark";
@@ -25,7 +13,18 @@ function autoFromColor(color: HSL): ResolvedTheme {
 }
 
 export function useTheme(currentColor: HSL) {
-  const [mode, setMode] = useState<ThemeMode>(readStoredMode);
+  const [mode, setMode] = useState<ThemeMode>("light");
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw === "auto" || raw === "light" || raw === "dark" || raw === "gray") {
+        setMode(raw);
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
   const resolved: ResolvedTheme =
     mode === "auto" ? autoFromColor(currentColor) : mode;
 
