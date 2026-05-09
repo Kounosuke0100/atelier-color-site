@@ -5,7 +5,7 @@ import {
   getHarmony,
   type HarmonyId,
 } from "../lib/harmony";
-import styles from "../styles/DetailModal.module.css";
+import styles from "../styles/StatusPanel.module.css";
 
 type Props = {
   base: HSL;
@@ -17,6 +17,7 @@ export function HarmonyPanel({ base, onPick }: Props) {
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
 
   const swatches = getHarmony(base, active);
+  const hasRatios = swatches.every((s) => typeof s.ratio === "number");
 
   const copy = async (key: string, hex: string) => {
     try {
@@ -48,6 +49,33 @@ export function HarmonyPanel({ base, onPick }: Props) {
           </button>
         ))}
       </div>
+      {hasRatios && (
+        <div
+          className={styles.ratioBar}
+          aria-label="面積比プレビュー (60-30-10)"
+        >
+          {swatches.map((s, i) => {
+            const hex = hslToHex(s.hsl);
+            const key = `${active}-bar-${i}`;
+            return (
+              <button
+                key={key}
+                type="button"
+                className={styles.ratioSeg}
+                style={{
+                  background: hex,
+                  flexGrow: s.ratio ?? 1,
+                  flexBasis: 0,
+                }}
+                onClick={() => copy(key, hex)}
+                title={`${hex} — クリックでコピー (${s.ratio}%)`}
+              >
+                <span className={styles.ratioSegLabel}>{s.ratio}%</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
       <div className={styles.harmonySwatches}>
         {swatches.map((s, i) => {
           const hex = hslToHex(s.hsl);
@@ -70,6 +98,9 @@ export function HarmonyPanel({ base, onPick }: Props) {
                 aria-hidden
               />
               <span className={styles.swatchHex}>{ok ? "Copied ✓" : hex}</span>
+              {typeof s.ratio === "number" && (
+                <span className={styles.swatchRatio}>{s.ratio}%</span>
+              )}
               {s.role === "base" && (
                 <span className={styles.swatchBadge}>Base</span>
               )}

@@ -100,19 +100,190 @@
   opacity: 1;
 }
 
-.meta {
-  display: grid;
-  grid-template-columns: 36px 1fr;
-  gap: 6px 12px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-variant-numeric: tabular-nums;
-  color: var(--ink-2);
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.metaLabel {
+.row {
+  display: grid;
+  grid-template-columns: 36px 1fr auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.rowLabel {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 500;
   color: var(--ink-3);
+}
+
+.rowValue {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  padding: 6px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.copyBtn {
+  font-size: 11px;
+  padding: 4px 10px;
+  min-width: 64px;
+  text-align: center;
+}
+.copyBtnOk {
+  border-color: var(--ink);
+  color: var(--ink);
+  background: var(--surface);
+}
+
+.harmony {
+  margin-top: 4px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.harmonyHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.harmonyTabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.harmonyTab {
+  font-size: 10px;
   letter-spacing: 0.04em;
+  padding: 4px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink-2);
+  cursor: pointer;
+}
+.harmonyTab:hover {
+  background: var(--surface-2);
+  color: var(--ink);
+}
+.harmonyTabActive,
+.harmonyTabActive:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--bg);
+}
+
+.harmonySwatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.swatch {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  padding: 4px;
+  min-width: 56px;
+  flex: 1 1 56px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  cursor: pointer;
+}
+.swatch:hover {
+  border-color: var(--ink-3);
+}
+.swatchBase {
+  border-color: var(--ink);
+}
+
+.swatchChip {
+  display: block;
+  height: 40px;
+  border-radius: 6px;
+  box-shadow: 0 0 0 1px var(--line) inset;
+}
+
+.swatchHex {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-align: center;
+  color: var(--ink-2);
+  letter-spacing: 0.02em;
+}
+
+.swatchBadge {
+  position: absolute;
+  top: -7px;
+  left: 6px;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--ink);
+  color: var(--bg);
+  padding: 1px 6px;
+  border-radius: 999px;
+}
+
+.swatchRatio {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ink-2);
+  text-align: center;
+  letter-spacing: 0.04em;
+}
+
+.ratioBar {
+  display: flex;
+  width: 100%;
+  height: 18px;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+}
+
+.ratioSeg {
+  border: none;
+  padding: 0;
+  cursor: copy;
+  position: relative;
+  transition: filter 120ms var(--ease);
+}
+.ratioSeg:hover {
+  filter: brightness(0.92);
+}
+
+.ratioSegLabel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.35);
+  letter-spacing: 0.02em;
+  pointer-events: none;
 }
 
 @media (max-width: 880px) {

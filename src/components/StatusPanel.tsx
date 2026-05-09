@@ -1,37 +1,59 @@
 import { useState } from "react";
 import {
   formatHsl,
+  formatHsv,
   formatRgb,
   hslToHex,
+  hslToHsv,
   hslToRgb,
   type HSL,
 } from "../lib/color";
 import { nearestColorName } from "../lib/colorName";
+import { HarmonyPanel } from "./HarmonyPanel";
 import styles from "../styles/StatusPanel.module.css";
 
 type Props = {
   color: HSL;
   depth: number;
+  onPickBase: (hsl: HSL) => void;
 };
 
 const MAX_DOTS = 5;
 
-export function StatusPanel({ color, depth }: Props) {
+export function StatusPanel({ color, depth, onPickBase }: Props) {
   const hex = hslToHex(color);
   const rgb = formatRgb(hslToRgb(color));
   const hsl = formatHsl(color);
+  const hsv = formatHsv(hslToHsv(color));
   const name = nearestColorName(hex);
-  const [copied, setCopied] = useState(false);
+  const [hexCopied, setHexCopied] = useState(false);
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
 
-  const copy = async () => {
+  const copyHex = async () => {
     try {
       await navigator.clipboard.writeText(hex);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 1400);
+      setHexCopied(true);
+      window.setTimeout(() => setHexCopied(false), 1400);
     } catch {
       // ignore
     }
   };
+
+  const copyValue = async (key: string, value: string) => {
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopiedKey(key);
+      window.setTimeout(() => setCopiedKey(null), 1200);
+    } catch {
+      // ignore
+    }
+  };
+
+  const rows: { key: string; label: string; value: string }[] = [
+    { key: "rgb", label: "RGB", value: rgb },
+    { key: "hsl", label: "HSL", value: hsl },
+    { key: "hsv", label: "HSV", value: hsv },
+  ];
 
   return (
     <aside className={styles.panel}>
@@ -52,7 +74,7 @@ export function StatusPanel({ color, depth }: Props) {
       <div className={styles.hexWrap}>
         <button
           className={styles.hex}
-          onClick={copy}
+          onClick={copyHex}
           aria-label="HEX をコピー"
           title="クリックでコピー"
         >
@@ -62,18 +84,30 @@ export function StatusPanel({ color, depth }: Props) {
           {name}
         </span>
         <span
-          className={`${styles.toast} ${copied ? styles.toastShow : ""}`}
+          className={`${styles.toast} ${hexCopied ? styles.toastShow : ""}`}
           aria-live="polite"
         >
           Copied
         </span>
       </div>
-      <dl className={styles.meta}>
-        <dt className={styles.metaLabel}>RGB</dt>
-        <dd>{rgb.replace(/^rgb\(|\)$/g, "")}</dd>
-        <dt className={styles.metaLabel}>HSL</dt>
-        <dd>{hsl.replace(/^hsl\(|\)$/g, "")}</dd>
-      </dl>
+      <div className={styles.rows}>
+        {rows.map(({ key, label, value }) => {
+          const ok = copiedKey === key;
+          return (
+            <div key={key} className={styles.row}>
+              <span className={styles.rowLabel}>{label}</span>
+              <code className={styles.rowValue}>{value}</code>
+              <button
+                className={`${styles.copyBtn} ${ok ? styles.copyBtnOk : ""}`}
+                onClick={() => copyValue(key, value)}
+              >
+                {ok ? "Copied ✓" : "Copy"}
+              </button>
+            </div>
+          );
+        })}
+      </div>
+      <HarmonyPanel base={color} onPick={onPickBase} />
     </aside>
   );
 }

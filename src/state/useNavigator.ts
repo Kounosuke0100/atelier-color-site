@@ -1,6 +1,11 @@
 import { useCallback, useState } from "react";
 import type { HSL } from "../lib/color";
-import { computeNextLayer, rootLayer, type Layer } from "../lib/grid";
+import {
+  INITIAL_STEP,
+  computeNextLayer,
+  rootLayer,
+  type Layer,
+} from "../lib/grid";
 
 export function useNavigator() {
   const [stack, setStack] = useState<Layer[]>(() => [rootLayer()]);
@@ -24,5 +29,17 @@ export function useNavigator() {
 
   const reset = useCallback(() => setStack([rootLayer()]), []);
 
-  return { stack, current, drillDown, back, jumpTo, reset };
+  const setBaseFromHsl = useCallback((hsl: HSL) => {
+    setStack([
+      rootLayer(),
+      {
+        depth: 1,
+        center: hsl,
+        stepS: INITIAL_STEP,
+        stepL: INITIAL_STEP,
+      },
+    ]);
+  }, []);
+
+  return { stack, current, drillDown, back, jumpTo, reset, setBaseFromHsl };
 }
