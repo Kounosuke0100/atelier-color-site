@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { HSL } from "../lib/color";
 
 export type ThemeMode = "auto" | "light" | "dark" | "gray";
@@ -19,27 +19,25 @@ function autoFromColor(color: HSL): ResolvedTheme {
 export function useTheme(currentColor: HSL) {
   const [mode, setMode] = useState<ThemeMode>("light");
   const [isLoaded, setIsLoaded] = useState(false);
+  const skipNextPersistRef = useRef(true);
   const resolved: ResolvedTheme =
     mode === "auto" ? autoFromColor(currentColor) : mode;
 
   useEffect(() => {
-    let cancelled = false;
-    queueMicrotask(() => {
+    const timeoutId = window.setTimeout(() => {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
-        if (!cancelled && isThemeMode(raw)) {
+        if (isThemeMode(raw)) {
           setMode(raw);
         }
       } catch {
         // ignore
       } finally {
-        if (!cancelled) {
-          setIsLoaded(true);
-        }
+        setIsLoaded(true);
       }
-    });
+    }, 0);
     return () => {
-      cancelled = true;
+      window.clearTimeout(timeoutId);
     };
   }, []);
 
@@ -49,6 +47,10 @@ export function useTheme(currentColor: HSL) {
 
   useEffect(() => {
     if (!isLoaded) return;
+    if (skipNextPersistRef.current) {
+      skipNextPersistRef.current = false;
+      return;
+    }
     try {
       localStorage.setItem(STORAGE_KEY, mode);
     } catch {
