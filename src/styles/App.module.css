@@ -27,6 +27,12 @@
   flex-direction: column;
   gap: 20px;
   align-items: center;
+  background: var(--canvas-bg);
+  border: 1px solid var(--canvas-line);
+  border-radius: var(--radius);
+  padding: clamp(16px, 3vw, 28px);
+  transition: background-color 220ms var(--ease),
+    border-color 220ms var(--ease);
 }
 
 .canvasInner {
