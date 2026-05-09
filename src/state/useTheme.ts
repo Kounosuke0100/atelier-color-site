@@ -6,16 +6,8 @@ export type ResolvedTheme = "light" | "dark" | "gray";
 
 const STORAGE_KEY = "atelier-color-theme";
 
-function readStoredMode(): ThemeMode {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw === "auto" || raw === "light" || raw === "dark" || raw === "gray") {
-      return raw;
-    }
-  } catch {
-    // ignore
-  }
-  return "light";
+function isThemeMode(raw: string | null): raw is ThemeMode {
+  return raw === "auto" || raw === "light" || raw === "dark" || raw === "gray";
 }
 
 function autoFromColor(color: HSL): ResolvedTheme {
@@ -25,21 +17,44 @@ function autoFromColor(color: HSL): ResolvedTheme {
 }
 
 export function useTheme(currentColor: HSL) {
-  const [mode, setMode] = useState<ThemeMode>(readStoredMode);
+  const [mode, setMode] = useState<ThemeMode>("light");
+  const [isLoaded, setIsLoaded] = useState(false);
   const resolved: ResolvedTheme =
     mode === "auto" ? autoFromColor(currentColor) : mode;
+
+  useEffect(() => {
+    let cancelled = false;
+    queueMicrotask(() => {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!cancelled && isThemeMode(raw)) {
+          setMode(raw);
+        }
+      } catch {
+        // ignore
+      } finally {
+        if (!cancelled) {
+          setIsLoaded(true);
+        }
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     document.documentElement.dataset.theme = resolved;
   }, [resolved]);
 
   useEffect(() => {
+    if (!isLoaded) return;
     try {
       localStorage.setItem(STORAGE_KEY, mode);
     } catch {
       // ignore
     }
-  }, [mode]);
+  }, [isLoaded, mode]);
 
   return { mode, setMode, resolved };
 }
