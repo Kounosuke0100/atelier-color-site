@@ -1,27 +1,17 @@
 import { useEffect, useRef, useState } from "react";
-import type { HSL } from "../lib/color";
 
-export type ThemeMode = "auto" | "light" | "dark" | "gray";
-export type ResolvedTheme = "light" | "dark" | "gray";
+export type ThemeMode = "light" | "dark" | "gray";
 
 const STORAGE_KEY = "atelier-color-theme";
 
 function isThemeMode(raw: string | null): raw is ThemeMode {
-  return raw === "auto" || raw === "light" || raw === "dark" || raw === "gray";
+  return raw === "light" || raw === "dark" || raw === "gray";
 }
 
-function autoFromColor(color: HSL): ResolvedTheme {
-  if (color.l >= 70) return "light";
-  if (color.l <= 30) return "dark";
-  return "gray";
-}
-
-export function useTheme(currentColor: HSL) {
+export function useTheme() {
   const [mode, setMode] = useState<ThemeMode>("light");
   const [isLoaded, setIsLoaded] = useState(false);
   const skipNextPersistRef = useRef(true);
-  const resolved: ResolvedTheme =
-    mode === "auto" ? autoFromColor(currentColor) : mode;
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
@@ -42,8 +32,8 @@ export function useTheme(currentColor: HSL) {
   }, []);
 
   useEffect(() => {
-    document.documentElement.dataset.theme = resolved;
-  }, [resolved]);
+    document.documentElement.dataset.theme = mode;
+  }, [mode]);
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -58,5 +48,5 @@ export function useTheme(currentColor: HSL) {
     }
   }, [isLoaded, mode]);
 
-  return { mode, setMode, resolved };
+  return { mode, setMode };
 }

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { hexToHsl, hslToHex, type HSL } from "../lib/color";
 import { centerColor, type Layer } from "../lib/grid";
-import type { ResolvedTheme, ThemeMode } from "../state/useTheme";
+import type { ThemeMode } from "../state/useTheme";
 import logoUrl from "../assets/logo.svg";
 import styles from "../styles/Header.module.css";
 
@@ -12,13 +12,11 @@ type Props = {
   onSetBase: (hsl: HSL) => void;
   themeMode: ThemeMode;
   onThemeChange: (mode: ThemeMode) => void;
-  resolvedTheme: ResolvedTheme;
 };
 
 const MAX_DEPTH_DOTS = 5;
 
 const THEME_OPTIONS: { id: ThemeMode; label: string }[] = [
-  { id: "auto", label: "Auto" },
   { id: "light", label: "Light" },
   { id: "dark", label: "Dark" },
   { id: "gray", label: "Gray" },
@@ -31,7 +29,6 @@ export function Header({
   onSetBase,
   themeMode,
   onThemeChange,
-  resolvedTheme,
 }: Props) {
   const canGoBack = stack.length > 1;
   const current = stack[stack.length - 1];
@@ -144,11 +141,6 @@ export function Header({
             </button>
           ))}
         </div>
-        {themeMode === "auto" && (
-          <span className={styles.themeAuto} aria-live="polite">
-            → {resolvedTheme}
-          </span>
-        )}
       </div>
       <div
         className={styles.depth}

@@ -212,14 +212,6 @@
   color: var(--bg);
 }
 
-.themeAuto {
-  margin-left: 4px;
-  font-size: 10px;
-  color: var(--ink-3);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
 @media (max-width: 720px) {
   .header {
     height: auto;
