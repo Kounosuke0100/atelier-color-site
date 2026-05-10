@@ -13,7 +13,7 @@ const MAX_DEPTH = 5;
 export default function App() {
   const { stack, current, drillDown, back, jumpTo, setBaseFromHsl } =
     useNavigator();
-  const theme = useTheme(centerColor(current));
+  const theme = useTheme();
 
   const handleSingleClick = (color: HSL) => {
     if (current.depth >= MAX_DEPTH) {
@@ -32,7 +32,6 @@ export default function App() {
         onSetBase={setBaseFromHsl}
         themeMode={theme.mode}
         onThemeChange={theme.setMode}
-        resolvedTheme={theme.resolved}
       />
       <div className={styles.shell}>
         <main className={styles.main}>
